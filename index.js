@@ -5,6 +5,7 @@ const PORT = 9333;
 
 app.get("/", (req, res) => res.send("payment test demo"));
 app.post("/approve", (req, res) => {
+  console.log(req);
   console.log(req.body);
   res.json({ status: "ok" });
 });
