@@ -15,18 +15,18 @@ app.post("/approve", upload.none(), async (req, res) => {
   const paymentData = req.body;
   console.log(`Payment acknowledgement request received at ${new Date().toISOString()}`);
   console.log(paymentData);
-  let result;
-  if (paymentData.P_STATUS && paymentData.P_STATUS == "00") {
-    const body = { P_MID: "INIpayTest", P_TID: paymentData.P_TID };
-    result = await fetch(paymentData.P_REQ_URL, {
-      method: "post",
-      body: JSON.stringify(body),
-      headers: { "Content-Type": "application/json" },
-    });
-    let result1 = await result.text();
-    console.log("This is result after convert to text");
-    console.log(result1);
-  }
+  let result = { test: "OK DOKIE" };
+  // if (paymentData.P_STATUS && paymentData.P_STATUS == "00") {
+  //   const body = { P_MID: "INIpayTest", P_TID: paymentData.P_TID };
+  //   result = await fetch(paymentData.P_REQ_URL, {
+  //     method: "post",
+  //     body: JSON.stringify(body),
+  //     headers: { "Content-Type": "application/json" },
+  //   });
+  //   let result1 = await result.text();
+  //   console.log("This is result after convert to text");
+  //   console.log(result1);
+  // }
   return res.json(result);
 });
 

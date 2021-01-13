@@ -1,0 +1,8 @@
+### PAYMENT STEP 2 API CALL
+POST http://localhost:3000/v1/matching/createMatching
+Content-Type: application/json
+
+{
+  "P_MID": "INIpayTest",
+  "P_TID": "",
+}
