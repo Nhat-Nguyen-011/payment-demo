@@ -11,7 +11,7 @@ app.use(express.json());
 
 app.get("/", (req, res) => res.send("payment test demo"));
 app.post("/approve", upload.none(), (req, res) => {
-  console.log("request received");
+  console.log(`request received at ${new Date().toISOString()}`);
   console.log(req.body);
   res.json({ status: "ok" });
 });
