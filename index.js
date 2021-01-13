@@ -15,9 +15,10 @@ app.post("/approve", upload.none(), async (req, res) => {
   const paymentData = req.body;
   console.log(`Payment acknowledgement request received at ${new Date().toISOString()}`);
   console.log(paymentData);
+  let result;
   if (paymentData.P_STATUS && paymentData.P_STATUS == "00") {
     const body = { P_MID: "INIpayTest", P_TID: paymentData.P_TID };
-    let result = await fetch(paymentData.P_REQ_URL, {
+    result = await fetch(paymentData.P_REQ_URL, {
       method: "post",
       body: JSON.stringify(body),
       headers: { "Content-Type": "application/json" },
@@ -28,6 +29,7 @@ app.post("/approve", upload.none(), async (req, res) => {
     console.log("This purchase acknowledgement api call response:");
     console.log(result);
   }
+  if (result.P_RMESG1) res.json(result);
   res.json({ status: "ok" });
 });
 
