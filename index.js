@@ -23,16 +23,13 @@ app.post("/approve", upload.none(), async (req, res) => {
       body: JSON.stringify(body),
       headers: { "Content-Type": "application/json" },
     });
-    console.log(result);
     result = await result.text();
-    result = JSON.parse('{"' + decodeURI(result).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
+    // result = JSON.parse('{"' + decodeURI(result).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
     console.log("This purchase acknowledgement api call response:");
     console.log(result);
-    console.log("Korean test");
-    console.log("여보세요");
   }
-  if (result.P_RMESG1) res.json(result);
-  res.json({ status: "ok" });
+  if (result.P_RMESG1) return res.json(result);
+  return res.json({ status: "ok" });
 });
 
 app.post("/noti", upload.none(), async (req, res) => {
