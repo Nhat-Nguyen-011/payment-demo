@@ -24,6 +24,7 @@ app.post("/approve", upload.none(), async (req, res) => {
     });
     console.log(result);
     result = await result.text();
+    result = decodeURI(result);
     console.log("This purchase acknowledgement api call response:");
     console.log(result);
   }
