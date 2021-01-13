@@ -22,7 +22,8 @@ app.post("/approve", upload.none(), async (req, res) => {
       body: JSON.stringify(body),
       headers: { "Content-Type": "application/json" },
     });
-    result = await result.json();
+    console.log(result);
+    result = await result.text();
     console.log("This purchase acknowledgement api call response:");
     console.log(result);
   }
