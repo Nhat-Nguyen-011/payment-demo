@@ -31,6 +31,13 @@ app.post("/approve", upload.none(), async (req, res) => {
   res.json({ status: "ok" });
 });
 
+app.post("/noti", upload.none(), async (req, res) => {
+  const paymentData = req.body;
+  console.log(`Vbank notification request received at ${new Date().toISOString()}`);
+  console.log(paymentData);
+  res.json({ status: "ok" });
+});
+
 app.listen(PORT, () => {
   console.log(`App is listen on port ${PORT}`);
 });
