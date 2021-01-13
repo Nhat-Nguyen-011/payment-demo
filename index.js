@@ -23,13 +23,11 @@ app.post("/approve", upload.none(), async (req, res) => {
       body: JSON.stringify(body),
       headers: { "Content-Type": "application/json" },
     });
-    result = await result.text();
-    // result = JSON.parse('{"' + decodeURI(result).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
-    console.log("This purchase acknowledgement api call response:");
+    let result1 = await result.text();
+    console.log("This is result after convert to text");
     console.log(result);
   }
-  if (result.P_RMESG1) return res.json(result);
-  return res.json({ status: "ok" });
+  return res.json(result);
 });
 
 app.post("/noti", upload.none(), async (req, res) => {
