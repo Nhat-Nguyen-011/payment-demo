@@ -25,7 +25,7 @@ app.post("/approve", upload.none(), async (req, res) => {
     });
     let result1 = await result.text();
     console.log("This is result after convert to text");
-    console.log(result);
+    console.log(result1);
   }
   return res.json(result);
 });
