@@ -34,7 +34,7 @@ app.post("/approve", upload.none(), async (req, res) => {
       method: "POST",
       body: form,
     });
-    result = await result.json();
+    result = await result.text();
     console.log("This is second api result");
     console.log(result);
   }
