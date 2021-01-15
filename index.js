@@ -3,6 +3,7 @@ const cors = require("cors");
 const app = express();
 const PORT = 9333;
 const fetch = require("node-fetch");
+const FormData = require("form-data");
 
 const multer = require("multer");
 const upload = multer();
@@ -16,17 +17,27 @@ app.post("/approve", upload.none(), async (req, res) => {
   console.log(`Payment acknowledgement request received at ${new Date().toISOString()}`);
   console.log(paymentData);
   let result = { test: "OK DOKIE" };
-  // if (paymentData.P_STATUS && paymentData.P_STATUS == "00") {
-  //   const body = { P_MID: "INIpayTest", P_TID: paymentData.P_TID };
-  //   result = await fetch(paymentData.P_REQ_URL, {
-  //     method: "post",
-  //     body: JSON.stringify(body),
-  //     headers: { "Content-Type": "application/json" },
-  //   });
-  //   let result1 = await result.text();
-  //   console.log("This is result after convert to text");
-  //   console.log(result1);
-  // }
+  if (paymentData.P_STATUS && paymentData.P_STATUS == "00") {
+    // const body = { P_MID: "INIpayTest", P_TID: paymentData.P_TID };
+    // result = await fetch(paymentData.P_REQ_URL, {
+    //   method: "post",
+    //   body: JSON.stringify(body),
+    //   headers: { "Content-Type": "application/json" },
+    // });
+    // let result1 = await result.text();
+    // console.log("This is result after convert to text");
+    // console.log(result1);
+    const form = new FormData();
+    form.append("P_MID", "INIpayTest");
+    form.append("P_TID", paymentData.P_TID);
+    result = await fetch(paymentData.P_REQ_URL, {
+      method: "POST",
+      body: form,
+    });
+    result = await result.json();
+    console.log("This is second api result");
+    console.log(result);
+  }
   return res.json(result);
 });
 
