@@ -4,5 +4,5 @@ Content-Type: application/json
 
 {
   "P_MID": "INIpayTest",
-  "P_TID": "INIMX_AUTHINIpayTest20210113171603435920",
+  "P_TID": "INIMX_AUTHINIpayTest20210113174046845155",
 }
