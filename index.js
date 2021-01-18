@@ -8,7 +8,7 @@ const FormData = require("form-data");
 const multer = require("multer");
 const upload = multer();
 
-app.use(express.urlencoded());
+// app.use(express.urlencoded());
 app.use(express.json());
 
 app.get("/", (req, res) => res.send("payment test demo"));
@@ -43,19 +43,19 @@ app.post("/approve", upload.none(), async (req, res) => {
   return res.json({ status: result });
 });
 
-// app.post("/noti", upload.none(), async (req, res) => {
-//   const paymentData = req.body;
-//   console.log(`Vbank notification request received at ${new Date().toISOString()}`);
-//   console.log(paymentData);
-//   return res.json({ status: "not ok" });
-// });
-
-app.post("/noti", async (req, res) => {
+app.post("/noti", upload.none(), async (req, res) => {
   const paymentData = req.body;
   console.log(`Vbank notification request received at ${new Date().toISOString()}`);
   console.log(paymentData);
   return res.json({ status: "not ok" });
 });
+
+// app.post("/noti", async (req, res) => {
+//   const paymentData = req.body;
+//   console.log(`Vbank notification request received at ${new Date().toISOString()}`);
+//   console.log(paymentData);
+//   return res.json({ status: "not ok" });
+// });
 
 app.listen(PORT, () => {
   console.log(`App is listen on port ${PORT}`);
