@@ -38,14 +38,14 @@ app.post("/approve", upload.none(), async (req, res) => {
     console.log("This is second api result");
     console.log(result);
   }
-  return res.json(result);
+  return res.json({ status: "ok" });
 });
 
 app.post("/noti", upload.none(), async (req, res) => {
   const paymentData = req.body;
   console.log(`Vbank notification request received at ${new Date().toISOString()}`);
   console.log(paymentData);
-  res.json({ status: "ok" });
+  return res.json({ status: "ok" });
 });
 
 app.listen(PORT, () => {
