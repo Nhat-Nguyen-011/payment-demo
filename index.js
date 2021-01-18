@@ -38,7 +38,7 @@ app.post("/approve", upload.none(), async (req, res) => {
     console.log("This is second api result");
     console.log(result);
   }
-  return res.json({ status: "ok" });
+  return res.json({ status: result });
 });
 
 app.post("/noti", upload.none(), async (req, res) => {
