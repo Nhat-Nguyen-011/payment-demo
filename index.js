@@ -36,7 +36,7 @@ app.post("/approve", upload.none(), async (req, res) => {
     });
     result = await result.text();
     console.log("This is second api result");
-    result = JSON.parse('{"' + decodeURI(info.replace(/&/g, '","').replace(/=/g, '":"')) + '"}');
+    result = JSON.parse('{"' + decodeURI(result.replace(/&/g, '","').replace(/=/g, '":"')) + '"}');
     console.log(result);
   }
   if (result.P_VACT_NUM) return res.json({ accountNumber: result.P_VACT_NUM });
