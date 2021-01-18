@@ -4,6 +4,7 @@ const app = express();
 const PORT = 9333;
 const fetch = require("node-fetch");
 const FormData = require("form-data");
+const bodyParser = require("body-parser");
 
 const multer = require("multer");
 const upload = multer();
@@ -13,6 +14,7 @@ const rawRouter = express.Router();
 
 defaultRouter.use(express.urlencoded());
 defaultRouter.use(express.json());
+rawRouter.use(bodyParser.text({ defaultCharset: "euc-kr" }));
 rawRouter.use(express.json());
 
 defaultRouter.get("/", (req, res) => res.send("payment test demo"));
