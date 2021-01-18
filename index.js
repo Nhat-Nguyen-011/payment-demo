@@ -36,16 +36,25 @@ app.post("/approve", upload.none(), async (req, res) => {
     });
     result = await result.text();
     console.log("This is second api result");
+    result = JSON.parse('{"' + decodeURI(info.replace(/&/g, '","').replace(/=/g, '":"')) + '"}');
     console.log(result);
   }
+  if (result.P_VACT_NUM) return res.json({ accountNumber: result.P_VACT_NUM });
   return res.json({ status: result });
 });
 
-app.post("/noti", upload.none(), async (req, res) => {
+// app.post("/noti", upload.none(), async (req, res) => {
+//   const paymentData = req.body;
+//   console.log(`Vbank notification request received at ${new Date().toISOString()}`);
+//   console.log(paymentData);
+//   return res.json({ status: "not ok" });
+// });
+
+app.post("/noti", async (req, res) => {
   const paymentData = req.body;
   console.log(`Vbank notification request received at ${new Date().toISOString()}`);
   console.log(paymentData);
-  return res.json({ status: "ok" });
+  return res.json({ status: "not ok" });
 });
 
 app.listen(PORT, () => {
