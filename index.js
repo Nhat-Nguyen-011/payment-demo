@@ -8,11 +8,15 @@ const FormData = require("form-data");
 const multer = require("multer");
 const upload = multer();
 
-// app.use(express.urlencoded());
-app.use(express.json());
+const defaultRouter = express.Router();
+const rawRouter = express.Router();
 
-app.get("/", (req, res) => res.send("payment test demo"));
-app.post("/approve", upload.none(), async (req, res) => {
+defaultRouter.use(express.urlencoded());
+defaultRouter.use(express.json());
+rawRouter.use(express.json());
+
+defaultRouter.get("/", (req, res) => res.send("payment test demo"));
+defaultRouter.post("/approve", upload.none(), async (req, res) => {
   const paymentData = req.body;
   console.log(`Payment acknowledgement request received at ${new Date().toISOString()}`);
   console.log(paymentData);
@@ -58,6 +62,9 @@ app.post("/noti", async (req, res) => {
   console.log(paymentData);
   return res.json({ status: "not ok" });
 });
+
+app.use(defaultRouter);
+app.use(rawRouter);
 
 app.listen(PORT, () => {
   console.log(`App is listen on port ${PORT}`);
