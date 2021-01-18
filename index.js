@@ -58,14 +58,23 @@ defaultRouter.post("/approve", upload.none(), async (req, res) => {
 //   return res.json({ status: "not ok" });
 // });
 
-rawRouter.post("/noti", async (req, res) => {
-  const paymentDataParam = req.query;
-  const paymentData = req.body;
-  console.log(`Vbank notification request received at ${new Date().toISOString()}`);
-  console.log(paymentDataParam);
-  console.log(paymentData);
-  return res.json({ status: "not ok" });
-});
+try {
+  rawRouter.post("/noti", async (req, res) => {
+    try {
+      const paymentDataParam = req.query;
+      const paymentData = req.body;
+      console.log(`Vbank notification request received at ${new Date().toISOString()}`);
+      console.log(paymentDataParam);
+      console.log(paymentData);
+      return res.json({ status: "not ok" });
+    } catch (error) {
+      console.log(error);
+      return res.json({ result: error });
+    }
+  });
+} catch (err) {
+  console.log(err);
+}
 
 app.use(defaultRouter);
 app.use(rawRouter);
