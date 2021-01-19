@@ -10,12 +10,36 @@ const multer = require("multer");
 const upload = multer();
 
 const defaultRouter = express.Router();
-const rawRouter = express.Router();
 
 defaultRouter.use(express.urlencoded());
 defaultRouter.use(express.json());
-rawRouter.use(bodyParser.urlencoded());
-rawRouter.use(express.json());
+
+//test 1
+// const rawRouter = express.Router();
+// rawRouter.use(bodyParser.urlencoded());
+// rawRouter.use(express.json());
+
+//test 2
+
+const testRouter1 = express.Router();
+const testRouter2 = express.Router();
+const testRouter3 = express.Router();
+
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
+const urlNotEncodedParser = function (req, res, next) {
+  rawBody = "";
+
+  req.on("data", function (chunk) {
+    rawBody += chunk;
+
+    if (rawBody.length > 1e6) requereqst.connection.destroy();
+  });
+
+  req.on("end", function () {
+    req.rawBody = JSON.parse(rawBody);
+    next();
+  });
+};
 
 defaultRouter.get("/", (req, res) => res.send("payment test demo"));
 defaultRouter.post("/approve", upload.none(), async (req, res) => {
@@ -40,23 +64,23 @@ defaultRouter.post("/approve", upload.none(), async (req, res) => {
   return res.json({ status: result });
 });
 
-try {
-  rawRouter.post("/noti", upload.none(), async (req, res) => {
-    try {
-      const paymentDataParam = req.query;
-      const paymentData = req.body;
-      console.log(`Vbank notification request received at ${new Date().toISOString()}`);
-      console.log(paymentDataParam);
-      console.log(paymentData);
-      return res.json({ status: "not ok" });
-    } catch (error) {
-      console.log(error);
-      return res.json({ result: error });
-    }
-  });
-} catch (err) {
-  console.log(err);
-}
+// try {
+//   rawRouter.post("/noti", upload.none(), async (req, res) => {
+//     try {
+//       const paymentDataParam = req.query;
+//       const paymentData = req.body;
+//       console.log(`Vbank notification request received at ${new Date().toISOString()}`);
+//       console.log(paymentDataParam);
+//       console.log(paymentData);
+//       return res.json({ status: "not ok" });
+//     } catch (error) {
+//       console.log(error);
+//       return res.json({ result: error });
+//     }
+//   });
+// } catch (err) {
+//   console.log(err);
+// }
 
 // try {
 //   rawRouter.post("/noti", async (req, res) => {
@@ -75,9 +99,42 @@ try {
 // } catch (err) {
 //   console.log(err);
 // }
+try {
+  app.post("/noti1", urlNotEncodedParser, async (req, res) => {
+    try {
+      const paymentDataParam = req.query;
+      const paymentData = req.rawBody;
+      console.log(`Vbank notification request received at ${new Date().toISOString()}`);
+      console.log(paymentDataParam);
+      console.log(paymentData);
+      return res.json({ status: "not ok" });
+    } catch (error) {
+      console.log(error);
+      return res.json({ result: error });
+    }
+  });
+} catch (err) {
+  console.log(err);
+}
+try {
+  app.post("/noti2", urlencodedParser, async (req, res) => {
+    try {
+      const paymentDataParam = req.query;
+      const paymentData = req.body;
+      console.log(`Vbank notification request received at ${new Date().toISOString()}`);
+      console.log(paymentDataParam);
+      console.log(paymentData);
+      return res.json({ status: "not ok" });
+    } catch (error) {
+      console.log(error);
+      return res.json({ result: error });
+    }
+  });
+} catch (err) {
+  console.log(err);
+}
 
 app.use(defaultRouter);
-app.use(rawRouter);
 
 app.listen(PORT, () => {
   console.log(`App is listen on port ${PORT}`);
