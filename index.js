@@ -14,7 +14,7 @@ const rawRouter = express.Router();
 
 defaultRouter.use(express.urlencoded());
 defaultRouter.use(express.json());
-rawRouter.use(bodyParser.text({ defaultCharset: "euc-kr" }));
+rawRouter.use(bodyParser.urlencoded());
 rawRouter.use(express.json());
 
 defaultRouter.get("/", (req, res) => res.send("payment test demo"));
@@ -24,15 +24,6 @@ defaultRouter.post("/approve", upload.none(), async (req, res) => {
   console.log(paymentData);
   let result = { test: "OK DOKIE" };
   if (paymentData.P_STATUS && paymentData.P_STATUS == "00") {
-    // const body = { P_MID: "INIpayTest", P_TID: paymentData.P_TID };
-    // result = await fetch(paymentData.P_REQ_URL, {
-    //   method: "post",
-    //   body: JSON.stringify(body),
-    //   headers: { "Content-Type": "application/json" },
-    // });
-    // let result1 = await result.text();
-    // console.log("This is result after convert to text");
-    // console.log(result1);
     const form = new FormData();
     form.append("P_MID", "INIpayTest");
     form.append("P_TID", paymentData.P_TID);
