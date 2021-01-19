@@ -50,7 +50,6 @@ rawRouter.use(function (req, res, next) {
   });
 
   req.on("end", function () {
-    console.log(req.rawBody);
     next();
   });
 });
