@@ -70,7 +70,7 @@ app.use(function (req, res, next) {
 app.post("/noti", (req, res) => {
   console.log("this code run");
   console.log(req.rawBody);
-  return res.text("OK");
+  return res.send("OK");
 });
 
 // paymentRouter.use("/regular", paymentRegularRouter);
