@@ -1,37 +1,23 @@
 const express = require("express");
+const cors = require("cors");
 const app = express();
 const PORT = 9333;
 const fetch = require("node-fetch");
 const FormData = require("form-data");
 
-const url_decode = require("decode-uri-charset");
-
 const multer = require("multer");
 const upload = multer();
 
-const otherRouter = express.Router();
-const paymentRouter = express.Router();
+const defaultRouter = express.Router();
+const rawRouter = express.Router();
 
-const paymentRegularRouter = express.Router();
-const paymentRawRouter = express.Router();
+defaultRouter.use(express.urlencoded());
+defaultRouter.use(express.json());
+rawRouter.use(express.urlencoded());
+rawRouter.use(express.json());
 
-//OTHER ROUTER
-otherRouter.use(express.urlencoded());
-otherRouter.use(express.json());
-
-otherRouter.post("/paymentTest", (req, res) => {
-  console.log(req.body);
-  return res.json({ status: "NOT OK" });
-});
-
-//PAYMENT ROUTER
-
-//PAYMENT REGULAR ROUTER
-paymentRegularRouter.use(express.urlencoded());
-paymentRegularRouter.use(express.json());
-
-paymentRegularRouter.get("/", (req, res) => res.send("payment test demo"));
-paymentRegularRouter.post("/approve", upload.none(), async (req, res) => {
+defaultRouter.get("/", (req, res) => res.send("payment test demo"));
+defaultRouter.post("/approve", upload.none(), async (req, res) => {
   const paymentData = req.body;
   console.log(`Payment acknowledgement request received at ${new Date().toISOString()}`);
   console.log(paymentData);
@@ -53,31 +39,27 @@ paymentRegularRouter.post("/approve", upload.none(), async (req, res) => {
   return res.json({ status: result });
 });
 
-//PAYMENT RAW ROUTER
-paymentRawRouter.use(function (req, res, next) {
-  req.rawBody = "";
-  req.setEncoding("utf8");
-
-  req.on("data", function (chunk) {
-    req.rawBody += chunk;
+try {
+  rawRouter.post("/noti", upload.none(), async (req, res) => {
+    try {
+      const paymentDataParam = req.query;
+      const paymentData = req.body;
+      console.log(`Vbank notification request received at ${new Date().toISOString()}`);
+      console.log(paymentDataParam);
+      console.log(paymentData);
+      return res.json({ status: "not ok" });
+    } catch (error) {
+      console.log(error);
+      return res.json({ result: error });
+    }
   });
+} catch (err) {
+  console.log(err);
+}
 
-  req.on("end", function () {
-    next();
-  });
-});
-
-paymentRawRouter.post("/noti", (req, res) => {
-  console.log(req.rawBody);
-  return res.json({ status: "NOT OK" });
-});
-
-paymentRouter.use("/regular", paymentRegularRouter);
-paymentRouter.use("/raw", paymentRawRouter);
-
-app.use("/other", otherRouter);
-app.use("/payment", paymentRouter);
+app.use(defaultRouter);
+app.use(rawRouter);
 
 app.listen(PORT, () => {
-  console.log(`Payment test app in running on port ${PORT}`);
+  console.log(`App is listen on port ${PORT}`);
 });
