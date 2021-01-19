@@ -9,12 +9,29 @@ const url_decode = require("decode-uri-charset");
 const multer = require("multer");
 const upload = multer();
 
-const defaultRouter = express.Router();
-defaultRouter.use(express.urlencoded());
-defaultRouter.use(express.json());
+const otherRouter = express.Router();
+const paymentRouter = express.Router();
 
-defaultRouter.get("/", (req, res) => res.send("payment test demo"));
-defaultRouter.post("/approve", upload.none(), async (req, res) => {
+const paymentRegularRouter = express.Router();
+const paymentRawRouter = express.Router();
+
+//OTHER ROUTER
+otherRouter.use(express.urlencoded());
+otherRouter.use(express.json());
+
+otherRouter.post("/paymentTest", (req, res) => {
+  console.log(req.body);
+  return res.json({ status: "NOT OK" });
+});
+
+//PAYMENT ROUTER
+
+//PAYMENT REGULAR ROUTER
+paymentRegularRouter.use(express.urlencoded());
+paymentRegularRouter.use(express.json());
+
+paymentRegularRouter.get("/", (req, res) => res.send("payment test demo"));
+paymentRegularRouter.post("/approve", upload.none(), async (req, res) => {
   const paymentData = req.body;
   console.log(`Payment acknowledgement request received at ${new Date().toISOString()}`);
   console.log(paymentData);
@@ -36,12 +53,8 @@ defaultRouter.post("/approve", upload.none(), async (req, res) => {
   return res.json({ status: result });
 });
 
-//START VBANK TEST
-
-//test 1
-const rawRouter = express.Router();
-
-rawRouter.use(function (req, res, next) {
+//PAYMENT RAW ROUTER
+paymentRawRouter.use(function (req, res, next) {
   req.rawBody = "";
   req.setEncoding("utf8");
 
@@ -54,17 +67,17 @@ rawRouter.use(function (req, res, next) {
   });
 });
 
-rawRouter.post("/noti", upload.none(), async (req, res) => {
-  const paymentData = req.rawBody;
-
-  console.log(paymentData);
-
-  return res.json({ status: "OK" });
+paymentRawRouter.post("/noti", (req, res) => {
+  console.log(req.rawBody);
+  return res.json({ status: "NOT OK" });
 });
 
-app.use(defaultRouter);
-app.use(rawRouter);
+paymentRouter.use("/regular", paymentRegularRouter);
+paymentRouter.use("/raw", paymentRawRouter);
+
+app.use("/other", otherRouter);
+app.use("/payment", paymentRouter);
 
 app.listen(PORT, () => {
-  console.log(`App is listen on port ${PORT}`);
+  console.log(`Payment test app in running on port ${PORT}`);
 });
