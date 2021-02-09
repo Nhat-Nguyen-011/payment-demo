@@ -14,8 +14,14 @@ const otherRouter = express.Router();
 otherRouter.use(express.urlencoded());
 otherRouter.use(express.json());
 
-otherRouter.post("/paymentTest", (req, res) => {
-  console.log(req.body);
+otherRouter.get("/paymentTest", (req, res) => {
+  const ipAddress =
+    req.headers["x-forwarded-for"] ||
+    req.connection.remoteAddress ||
+    req.socket.remoteAddress ||
+    (req.connection.socket ? req.connection.socket.remoteAddress : null);
+  console.log("KG IP ADDRESS:", ipAddress);
+  console.log(req.query);
   return res.json({ status: "NOT OK" });
 });
 
@@ -66,6 +72,12 @@ paymentRawRouter.use(function (req, res, next) {
 });
 
 paymentRawRouter.post("/noti", (req, res) => {
+  const ipAddress =
+    req.headers["x-forwarded-for"] ||
+    req.connection.remoteAddress ||
+    req.socket.remoteAddress ||
+    (req.connection.socket ? req.connection.socket.remoteAddress : null);
+  console.log("KG IP ADDRESS:", ipAddress);
   console.log("this code run");
   console.log(req.rawBody);
   return res.send("OK");
