@@ -9,52 +9,50 @@ const url_decode = require("decode-uri-charset");
 const multer = require("multer");
 const upload = multer();
 
-// const otherRouter = express.Router();
-// const paymentRouter = express.Router();
+// OTHER ROUTER EXAMPLE
+const otherRouter = express.Router();
+otherRouter.use(express.urlencoded());
+otherRouter.use(express.json());
 
-// const paymentRegularRouter = express.Router();
-// const paymentRawRouter = express.Router();
+otherRouter.post("/paymentTest", (req, res) => {
+  console.log(req.body);
+  return res.json({ status: "NOT OK" });
+});
 
-//OTHER ROUTER
-// otherRouter.use(express.urlencoded());
-// otherRouter.use(express.json());
+//PAYMENT ROUTER EXAMPLE
+const paymentRouter = express.Router();
 
-// otherRouter.post("/paymentTest", (req, res) => {
-//   console.log(req.body);
-//   return res.json({ status: "NOT OK" });
-// });
+// PAYMENT REGULAR ROUTER FUNCTION
+const paymentRegularRouter = express.Router();
+paymentRegularRouter.use(express.urlencoded());
+paymentRegularRouter.use(express.json());
 
-//PAYMENT ROUTER
+paymentRegularRouter.get("/", (req, res) => res.send("payment test demo"));
+paymentRegularRouter.post("/approve", upload.none(), async (req, res) => {
+  const paymentData = req.body;
+  console.log(`Payment acknowledgement request received at ${new Date().toISOString()}`);
+  console.log(paymentData);
+  let result = { test: "OK DOKIE" };
+  if (paymentData.P_STATUS && paymentData.P_STATUS == "00") {
+    const form = new FormData();
+    form.append("P_MID", "INIpayTest");
+    form.append("P_TID", paymentData.P_TID);
+    result = await fetch(paymentData.P_REQ_URL, {
+      method: "POST",
+      body: form,
+    });
+    result = await result.text();
+    console.log("This is second api result");
+    result = JSON.parse('{"' + decodeURI(result.replace(/&/g, '","').replace(/=/g, '":"')) + '"}');
+    console.log(result);
+  }
+  if (result.P_VACT_NUM) return res.json({ accountNumber: result.P_VACT_NUM });
+  return res.json({ status: result });
+});
 
-//PAYMENT REGULAR ROUTER
-// paymentRegularRouter.use(express.urlencoded());
-// paymentRegularRouter.use(express.json());
-
-// paymentRegularRouter.get("/", (req, res) => res.send("payment test demo"));
-// paymentRegularRouter.post("/approve", upload.none(), async (req, res) => {
-//   const paymentData = req.body;
-//   console.log(`Payment acknowledgement request received at ${new Date().toISOString()}`);
-//   console.log(paymentData);
-//   let result = { test: "OK DOKIE" };
-//   if (paymentData.P_STATUS && paymentData.P_STATUS == "00") {
-//     const form = new FormData();
-//     form.append("P_MID", "INIpayTest");
-//     form.append("P_TID", paymentData.P_TID);
-//     result = await fetch(paymentData.P_REQ_URL, {
-//       method: "POST",
-//       body: form,
-//     });
-//     result = await result.text();
-//     console.log("This is second api result");
-//     result = JSON.parse('{"' + decodeURI(result.replace(/&/g, '","').replace(/=/g, '":"')) + '"}');
-//     console.log(result);
-//   }
-//   if (result.P_VACT_NUM) return res.json({ accountNumber: result.P_VACT_NUM });
-//   return res.json({ status: result });
-// });
-
-//PAYMENT RAW ROUTER
-app.use(function (req, res, next) {
+// PAYMENT RAW ROUTER FUNCTION
+const paymentRawRouter = express.Router();
+paymentRawRouter.use(function (req, res, next) {
   req.rawBody = "";
   req.setEncoding("utf8");
 
@@ -67,17 +65,17 @@ app.use(function (req, res, next) {
   });
 });
 
-app.post("/noti", (req, res) => {
+paymentRawRouter.post("/noti", (req, res) => {
   console.log("this code run");
   console.log(req.rawBody);
   return res.send("OK");
 });
 
-// paymentRouter.use("/regular", paymentRegularRouter);
-// paymentRouter.use("/raw", paymentRawRouter);
+paymentRouter.use("/regular", paymentRegularRouter);
+paymentRouter.use("/raw", paymentRawRouter);
 
-// app.use("/other", otherRouter);
-// app.use("/payment", paymentRouter);
+app.use("/other", otherRouter);
+app.use("/payment", paymentRouter);
 
 app.listen(PORT, () => {
   console.log(`Payment test app in running on port ${PORT}`);
